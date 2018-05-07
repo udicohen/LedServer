@@ -4,11 +4,11 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 
-ws281x.init(100);
-ws281x.reset();
+//ws281x.init(100);
+//ws281x.reset();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
+app.use(bodyParser.json({limit: '50mb'}));
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -30,7 +30,7 @@ function read_led_data(height, width, data){
 
     var NUM_LEDS = height*width,
         pixelData = new Uint32Array(NUM_LEDS);
-    ws281x.reset();
+    //ws281x.reset();
     ws281x.init(NUM_LEDS);
 
     console.log('NUM_LEDS=',NUM_LEDS);
