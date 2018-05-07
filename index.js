@@ -26,6 +26,10 @@ function read_led_data(height, width, data){
             // light as [R,B,G]
             curr_light = curr_string.slice(1).split(',');
 
+            var r =  parseInt(curr_light[0]);
+            var g =  parseInt(curr_light[1]);
+            var b =  parseInt(curr_light[2]);
+
             console.log(curr_light,i,j);
             retval.push(curr_light);
             //Update the LEd Value
