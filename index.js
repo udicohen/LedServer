@@ -14,17 +14,11 @@ app.get('/', (req, res) => res.send('Hello World!'))
 
 
 app.post('/test', function(req, res, next) {
-//    console.log(req.body);
-//    console.log("data we got = ", req.rawBody);
 
-
+    console.log(req.body);
     height = req.body.height || 2;
     width = req.body.width || 3;
     data = req.body.data || "[182,23,234][172,23,234][12,263,234][234,33,34][100,232,24][162,43,284]";
-
-
-
-
 
     pixelData = read_led_data(height,width,data);
 
@@ -32,10 +26,14 @@ app.post('/test', function(req, res, next) {
 });
 
 function read_led_data(height, width, data){
+    console.log('in read_led_data');
+
     var NUM_LEDS = height*width,
         pixelData = new Uint32Array(NUM_LEDS);
     ws281x.reset();
     ws281x.init(NUM_LEDS);
+
+    console.log('NUM_LEDS=',NUM_LEDS);
 
     retval = [];
     data_array = data.split(']');
@@ -55,6 +53,7 @@ function read_led_data(height, width, data){
 
         }
     }
+    console.log('pixelData=',pixelData);
     ws281x.render(pixelData);
 
     return pixelData
