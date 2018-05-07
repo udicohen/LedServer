@@ -19,7 +19,7 @@ app.post('/test', function(req, res, next) {
     height = 2;
     width = 3;
     data = "[182,23,234][172,23,234][12,263,234]" +
-           "[2,3,34][1,2,24][62,43,284]";
+           "[234,33,34][100,232,24][162,43,284]";
     parsed_light = read_led_data(height,width,data);
 
     ws281x.render(pixelData);
