@@ -2,12 +2,15 @@ const ws281x = require('rpi-ws281x-native');
 
 const express = require('express');
 const app = express();
+const bodyParser = require("body-parser");
 
 var NUM_LEDS = parseInt(process.argv[2], 10) || 6,
     pixelData = new Uint32Array(NUM_LEDS);
 
 ws281x.init(NUM_LEDS);
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
