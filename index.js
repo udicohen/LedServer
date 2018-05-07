@@ -1,5 +1,13 @@
+const ws281x = require('rpi-ws281x-native');
+
 const express = require('express');
 const app = express();
+
+var NUM_LEDS = parseInt(process.argv[2], 10) || 6,
+    pixelData = new Uint32Array(NUM_LEDS);
+
+ws281x.init(NUM_LEDS);
+
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -13,6 +21,9 @@ app.post('/test', function(req, res, next) {
     data = "[182,23,234][172,23,234][12,263,234]" +
            "[2,3,34][1,2,24][62,43,284]";
     parsed_light = read_led_data(height,width,data);
+
+    ws281x.render(pixelData);
+
     res.json(parsed_light);
 });
 
@@ -30,13 +41,20 @@ function read_led_data(height, width, data){
             var g =  parseInt(curr_light[1]);
             var b =  parseInt(curr_light[2]);
 
-            console.log(curr_light,i,j);
-            retval.push(curr_light);
+            console.log(rgb2Int(r,g,b),i,j);
+            pixelData[j+i*width] = rgb2Int(r,g,b);
+
+            //console.log(curr_light,i,j);
+            //retval.push(curr_light);
             //Update the LEd Value
         }
     }
 
     return retval;
+}
+
+function rgb2Int(r, g, b) {
+    return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
 
 
