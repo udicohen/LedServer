@@ -2,11 +2,8 @@ const ws281x = require('rpi-ws281x-native');
 
 const express = require('express');
 const app = express();
-
-var NUM_LEDS = parseInt(process.argv[2], 10) || 6,
-    pixelData = new Uint32Array(NUM_LEDS);
-
-ws281x.init(NUM_LEDS);
+ws281x.init(100);
+ws281x.reset();
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
@@ -16,15 +13,27 @@ app.post('/test', function(req, res, next) {
 //    console.log(req.body);
 //    console.log("data we got = ", req.rawBody);
 
-    height = 2;
-    width = 3;
-    data = "[182,23,234][172,23,234][12,263,234]" +
-           "[234,33,34][100,232,24][162,43,284]";
-    parsed_light = read_led_data(height,width,data);
+
+    console.log(req)
+    console.log(req.body)
+    console.log(req.params)
+    height = req.body.height || 2;
+    width = req.body.width || 3;
+    data = req.body.data || "[182,23,234][172,23,234][12,263,234][234,33,34][100,232,24][162,43,284]";
+
+    var NUM_LEDS = height*width,
+        pixelData = new Uint32Array(NUM_LEDS);
+
+    ws281x.init(NUM_LEDS);
+    ws281x.reset();
+
+
+
+    read_led_data(height,width,data);
 
     ws281x.render(pixelData);
 
-    res.json(parsed_light);
+    res.json(pixelData);
 });
 
 function read_led_data(height, width, data){
@@ -41,16 +50,10 @@ function read_led_data(height, width, data){
             var g =  parseInt(curr_light[1]);
             var b =  parseInt(curr_light[2]);
 
-            console.log(rgb2Int(r,g,b),i,j);
             pixelData[j+i*width] = rgb2Int(r,g,b);
 
-            //console.log(curr_light,i,j);
-            //retval.push(curr_light);
-            //Update the LEd Value
         }
     }
-
-    return retval;
 }
 
 function rgb2Int(r, g, b) {
