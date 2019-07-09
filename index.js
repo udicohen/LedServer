@@ -130,8 +130,7 @@ function translate_matrix_to_our_rgb_photo(matrix_string){
 
 
     //console.log('data=',data);
-    console.log('Remove this comment down here!!!!');
-    //pixelData = read_led_data(height,width,data);
+    pixelData = read_led_data(height,width,data);
 
     console.log('out translate_matrix_to_our_rgb_photo');
 }
