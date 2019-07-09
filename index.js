@@ -25,6 +25,17 @@ app.post('/test', function(req, res, next) {
     res.json(pixelData);
 });
 
+app.post('/translate_matrix_to_our_rgb_photo', function(req, res, next) {
+    console.log(req.body);
+    matrix_string = req.body.matrix_string  ||  "     **     \n" +
+                                                "     @@     \n" +
+                                                "     ##     \n";
+    console.log(matrix_string);
+    pixelData = translate_matrix_to_our_rgb_photo(matrix_string);
+    res.json(pixelData);
+
+});
+
 function read_led_data(height, width, data){
     console.log('in read_led_data');
 
@@ -61,6 +72,57 @@ function read_led_data(height, width, data){
 
 function rgb2Int(r, g, b) {
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+}
+
+function translate_matrix_to_our_rgb_photo(matrix_string){
+    width = matrix_string.indexOf('\n');
+    height = (matrix_string.split('\n').length) - 1;
+    matrix = matrix_string.replace(/\n|\r/g, "");
+
+
+    data = "";
+    console.log('width=',width);
+    console.log('height=',height);
+    console.log(matrix,matrix);
+
+    for(var i=0;i<height;i++) {
+        var curr_line = "";
+        for (var j=0;j<width;j++) {
+            char = matrix.charAt(i*width+j);
+            if (char == '*') {
+                curr_rgb = "[0,0,255]"
+            } else if (char == '#') {
+                curr_rgb = "[0,255,0]"
+            } else if (char == '@') {
+                curr_rgb = "[255,0,0]"
+            } else {
+                curr_rgb = "[0,0,0]"
+            }
+
+            if (i%2==0){
+                curr_line = curr_rgb + curr_line;
+            }else{
+                curr_line += curr_rgb;
+            }
+            console.log((i*width+j).toString() +' : ',curr_line);
+        }
+
+
+        data += curr_line;
+
+        data += "[0,0,0]";
+        if (i%2!=0){
+            data += "[0,0,0]";
+        }
+    }
+
+    var pading = "[0,0,0][0,0,0][0,0,0][0,0,0][0,0,0][0,0,0][0,0,0][0,0,0]";
+    data = pading + data;
+
+
+    console.log('data=',data);
+    console.log('Remove this comment down here!!!!');
+    //pixelData = read_led_data(height,width,data);
 }
 
 
