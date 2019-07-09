@@ -16,22 +16,32 @@ app.get('/', (req, res) => res.send('Hello World!'))
 app.post('/test', function(req, res, next) {
 
     console.log(req.body);
-    height = req.body.height || 2;
-    width = req.body.width || 3;
-    data = req.body.data || "[182,23,234][172,23,234][12,263,234][234,33,34][100,232,24][162,43,284]";
+    var height = req.body.height || 2;
+    var width = req.body.width || 3;
+    var data = req.body.data || "[182,23,234][172,23,234][12,263,234][234,33,34][100,232,24][162,43,284]";
 
-    pixelData = read_led_data(height,width,data);
+    var pixelData = read_led_data(height,width,data);
 
     res.json(pixelData);
 });
 
 app.post('/translate_matrix_to_our_rgb_photo', function(req, res, next) {
     console.log(req.body);
-    matrix_string = req.body.matrix_string  ||  "     **     \n" +
+    var matrix_string = req.body.matrix_string  ||  "     **     \n" +
                                                 "     @@     \n" +
                                                 "     ##     \n";
     console.log(matrix_string);
-    pixelData = translate_matrix_to_our_rgb_photo(matrix_string);
+    var pixelData = translate_matrix_to_our_rgb_photo(matrix_string);
+    res.json(pixelData);
+
+});
+
+app.post('/matrix_to_moving_matrix', function(req, res, next) {
+    var matrix_string = req.body.matrix_string  ||  "     **          **          **          **          **          **          **     \n" +
+                                                "     @@          @@          @@          @@          @@          @@          @@     \n" +
+                                                "     ##          ##          ##          ##          ##          ##          ##     \n";
+    console.log(matrix_string);
+    var pixelData = matrix_to_moving_matrix(matrix_string);
     res.json(pixelData);
 
 });
@@ -64,7 +74,6 @@ function read_led_data(height, width, data){
 
         }
     }
-    console.log('pixelData=',pixelData);
     ws281x.render(pixelData);
 
     return pixelData
@@ -75,15 +84,17 @@ function rgb2Int(r, g, b) {
 }
 
 function translate_matrix_to_our_rgb_photo(matrix_string){
-    width = matrix_string.indexOf('\n');
-    height = (matrix_string.split('\n').length) - 1;
-    matrix = matrix_string.replace(/\n|\r/g, "");
+    console.log('in translate_matrix_to_our_rgb_photo');
+
+    var width = matrix_string.indexOf('\n');
+    var height = (matrix_string.split('\n').length) - 1;
+    var matrix = matrix_string.replace(/\n|\r/g, "");
 
 
-    data = "";
+    var data = "";
     console.log('width=',width);
     console.log('height=',height);
-    console.log(matrix,matrix);
+    console.log('matrix=',matrix);
 
     for(var i=0;i<height;i++) {
         var curr_line = "";
@@ -104,9 +115,7 @@ function translate_matrix_to_our_rgb_photo(matrix_string){
             }else{
                 curr_line += curr_rgb;
             }
-            console.log((i*width+j).toString() +' : ',curr_line);
         }
-
 
         data += curr_line;
 
@@ -120,11 +129,48 @@ function translate_matrix_to_our_rgb_photo(matrix_string){
     data = pading + data;
 
 
-    console.log('data=',data);
+    //console.log('data=',data);
     console.log('Remove this comment down here!!!!');
     //pixelData = read_led_data(height,width,data);
+
+    console.log('out translate_matrix_to_our_rgb_photo');
 }
 
+function matrix_to_moving_matrix(matrix_string) {
+    console.log('in matrix_to_moving_matrix');
+
+    var width = matrix_string.indexOf('\n');
+    var height = (matrix_string.split('\n').length) - 1;
+    var matrix = matrix_string.replace(/\n|\r/g, "");
+
+    console.log('width=',width);
+    console.log('height=',height);
+    console.log('matrix=',matrix);
+
+    var start_width_position = 0;
+    var curr_width = 1;
+    var max_width = 30;
+
+    while (true) {
+        var new_matrix = "";
+        if(curr_width > max_width){
+            start_width_position = curr_width - max_width;
+        }
+        for (var i = 0; i < height; i++) {
+            for (var j = start_width_position; j < curr_width; j++) {
+                new_matrix += matrix.charAt(i * width + j);
+            }
+            new_matrix += '\n';
+        }
+        translate_matrix_to_our_rgb_photo(new_matrix);
+        curr_width++;
+        if (curr_width > width) {
+            break;
+        }
+    }
+
+    console.log('out matrix_to_moving_matrix');
+}
 
 
 app.listen(3101, () => console.log('Example app listening on port 3101!'))
