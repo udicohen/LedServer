@@ -94,7 +94,7 @@ function translate_matrix_to_our_rgb_photo(matrix_string){
     var data = "";
     console.log('width=',width);
     console.log('height=',height);
-    console.log('matrix=',matrix);
+    console.log('matrix_string=\n',matrix_string);
 
     for(var i=0;i<height;i++) {
         var curr_line = "";
@@ -150,22 +150,24 @@ function matrix_to_moving_matrix(matrix_string) {
     var curr_width = 1;
     var max_width = 30;
 
-    while (true) {
-        var new_matrix = "";
-        if(curr_width > max_width){
-            start_width_position = curr_width - max_width;
-        }
-        for (var i = 0; i < height; i++) {
-            for (var j = start_width_position; j < curr_width; j++) {
-                new_matrix += matrix.charAt(i * width + j);
+    for (var count=1; count<100; count++) {
+        setTimeout(function (){
+            console.log('count=',count);
+            var new_matrix = "";
+            if(curr_width > max_width){
+                start_width_position = curr_width - max_width;
             }
-            new_matrix += '\n';
-        }
-        translate_matrix_to_our_rgb_photo(new_matrix);
-        curr_width++;
-        if (curr_width > width) {
-            break;
-        }
+            for (var i = 0; i < height; i++) {
+                for (var j = start_width_position; j < curr_width; j++) {
+                    new_matrix += matrix.charAt(i * width + j);
+                }
+                new_matrix += '\n';
+            }
+
+            translate_matrix_to_our_rgb_photo(new_matrix);
+
+            curr_width++;
+        }, count*1000);
     }
 
     console.log('out matrix_to_moving_matrix');
