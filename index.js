@@ -82,6 +82,9 @@ function read_led_data(height, width, data){
 function rgb2Int(r, g, b) {
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
 }
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
 
 function translate_matrix_to_our_rgb_photo(matrix_string){
     console.log('in translate_matrix_to_our_rgb_photo');
@@ -96,18 +99,26 @@ function translate_matrix_to_our_rgb_photo(matrix_string){
     console.log('height=',height);
     console.log('matrix_string=\n',matrix_string);
 
+    var r = "[0,0,255]";
+    var g = "[0,255,0]";
+    var b = "[255,0,0]";
+
+    rnd_num = getRandomInt(3);
+
     for(var i=0;i<height;i++) {
         var curr_line = "";
         for (var j=0;j<width;j++) {
             char = matrix.charAt(i*width+j);
-            if (char == '*') {
-                curr_rgb = "[0,0,255]"
-            } else if (char == '#') {
-                curr_rgb = "[0,255,0]"
-            } else if (char == '@') {
-                curr_rgb = "[255,0,0]"
-            } else {
+            if (char == ' '){
                 curr_rgb = "[0,0,0]"
+            }else if(rnd_num == 0){
+                curr_rgb = r
+            }else if(rnd_num == 1){
+                curr_rgb = g
+            }else if(rnd_num == 2){
+                curr_rgb = b
+            }else{
+                curr_rgb = g
             }
 
             if (i%2==0){
@@ -150,24 +161,26 @@ function matrix_to_moving_matrix(matrix_string) {
     var curr_width = 1;
     var max_width = 30;
 
-    for (var count=1; count<100; count++) {
-        setTimeout(function (){
-            console.log('count=',count);
-            var new_matrix = "";
-            if(curr_width > max_width){
-                start_width_position = curr_width - max_width;
-            }
-            for (var i = 0; i < height; i++) {
-                for (var j = start_width_position; j < curr_width; j++) {
-                    new_matrix += matrix.charAt(i * width + j);
+    while(true){
+        for (var count=1; count<220; count++) {
+            setTimeout(function (){
+                console.log('count=',count);
+                var new_matrix = "";
+                if(curr_width > max_width){
+                    start_width_position = curr_width - max_width;
                 }
-                new_matrix += '\n';
-            }
+                for (var i = 0; i < height; i++) {
+                    for (var j = start_width_position; j < curr_width; j++) {
+                        new_matrix += matrix.charAt(i * width + j);
+                    }
+                    new_matrix += '\n';
+                }
 
-            translate_matrix_to_our_rgb_photo(new_matrix);
+                translate_matrix_to_our_rgb_photo(new_matrix);
 
-            curr_width++;
-        }, count*1000);
+                curr_width++;
+            }, count*400);
+        }
     }
 
     console.log('out matrix_to_moving_matrix');
