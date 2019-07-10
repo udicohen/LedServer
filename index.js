@@ -159,7 +159,7 @@ function matrix_to_moving_matrix(matrix_string) {
     var curr_width = 1;
     var max_width = 30;
 
-    var stam_var = 0;
+    var stam_var = 5;
     for (var count=1; count<width; count++) {
         setTimeout(function (){
             stam_var++;
