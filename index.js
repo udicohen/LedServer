@@ -162,7 +162,7 @@ function matrix_to_moving_matrix(matrix_string) {
     var max_width = 30;
 
     while(true){
-        for (var count=1; count<220; count++) {
+        for (var count=1; count<width; count++) {
             setTimeout(function (){
                 console.log('count=',count);
                 var new_matrix = "";
