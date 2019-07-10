@@ -159,8 +159,10 @@ function matrix_to_moving_matrix(matrix_string) {
     var curr_width = 1;
     var max_width = 30;
 
+    var stam_var = 0;
     for (var count=1; count<width; count++) {
         setTimeout(function (){
+            stam_var++;
             var new_matrix = "";
             if(curr_width > max_width){
                 start_width_position = curr_width - max_width;
@@ -175,7 +177,12 @@ function matrix_to_moving_matrix(matrix_string) {
             translate_matrix_to_our_rgb_photo(new_matrix);
 
             curr_width++;
-        }, count*200);
+
+            if (stam_var == width){
+                matrix_to_moving_matrix(matrix_string);
+            }
+
+        }, count*100);
     }
 
     console.log('out matrix_to_moving_matrix');
