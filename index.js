@@ -103,25 +103,19 @@ function translate_matrix_to_our_rgb_photo(matrix_string){
     console.log('height=',height);
     console.log('matrix_string=\n',matrix_string);
 
-    var r = "[0,0,255]";
-    var g = "[0,255,0]";
-    var b = "[255,0,0]";
 
     for(var i=0;i<height;i++) {
         var curr_line = "";
         for (var j=0;j<width;j++) {
             char = matrix.charAt(i*width+j);
-            rnd_num = getRandomInt(3);
+            var rnd_r = getRandomInt(256);
+            var rnd_g = getRandomInt(256);
+            var rnd_b = getRandomInt(256);
+
             if (char == ' '){
                 curr_rgb = "[0,0,0]"
-            }else if(rnd_num == 0){
-                curr_rgb = r
-            }else if(rnd_num == 1){
-                curr_rgb = g
-            }else if(rnd_num == 2){
-                curr_rgb = b
-            }else{
-                curr_rgb = g
+            }else {
+                curr_rgb = "["+rnd_r+","+rnd_g+","+rnd_b+","+"]"
             }
 
             if (i%2==0){
