@@ -187,7 +187,7 @@ function matrix_to_moving_matrix(matrix_string) {
                 matrix_to_moving_matrix(matrix_string);
             }
 
-        }, count*25);
+        }, count*40);
     }
 
     console.log('out matrix_to_moving_matrix');
